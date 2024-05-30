@@ -7,8 +7,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public record ResultadoApi(
-        @JsonAlias("results") List<Libro> resultados
+public record RespuestaApi(
+        @JsonAlias("results") List<LinkedHashMap> resultados
 ) {
 }

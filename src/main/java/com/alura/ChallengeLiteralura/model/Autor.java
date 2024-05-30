@@ -2,7 +2,7 @@ package com.alura.ChallengeLiteralura.model;
 
 import jakarta.persistence.*;
 
-import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Table(name = "autores")
@@ -10,14 +10,29 @@ public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
     private String autor;
     private Integer fechaNacimiento;
     private Integer fechaMuerte;
-    @OneToMany(mappedBy = "serie", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private List<Libro> libros;
+    @OneToOne
+    private Libro libro;
 
     public Autor(){}
+
+    public Autor(DatosAutor datosAutor){
+        this.autor = datosAutor.autor();
+        this.fechaNacimiento = datosAutor.fechaNacimiento();
+        this.fechaMuerte = datosAutor.fechaMuerte();
+
+    }
+
+    @Override
+    public String toString(){
+        return "\n=== === === === === AUTOR === === === === ===\n" +
+                "Autor :: " + this.autor + "\n" +
+                "Fecha de Nacimiento :: " + this.fechaNacimiento + "\n" +
+                "Fecha de Muerte :: " + this.fechaMuerte + "\n" +
+                "=== === === === === === === === === === ===\n";
+    }
 
     public Long getId() {
         return id;
@@ -51,11 +66,11 @@ public class Autor {
         this.fechaMuerte = fechaMuerte;
     }
 
-    public List<Libro> getLibros() {
-        return libros;
+    public Libro getLibro() {
+        return libro;
     }
 
-    public void setLibros(List<Libro> libros) {
-        this.libros = libros;
+    public void setLibro(Libro libro) {
+        this.libro = libro;
     }
 }

@@ -1,6 +1,8 @@
 package com.alura.ChallengeLiteralura.model;
 
+import com.alura.ChallengeLiteralura.repository.LibroRepository;
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "libros")
@@ -8,18 +10,32 @@ public class Libro {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique = true)
     private String titulo;
-    private String autor;
-    private String idioma;
+    @OneToOne(mappedBy = "libro", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Autor autor;
+    @Enumerated(EnumType.STRING)
+    private Idioma idioma;
     private Integer numeroDeDescargas;
-    @ManyToOne
-    private Autor datosAutor;
 
     public Libro(){}
 
-    public Libro(DatosLibro d){
-        this.titulo = d.titulo();
+    public Libro(DatosLibro datosLibro){
+        this.titulo = datosLibro.titulo();
+        this.idioma = Idioma.fromString(datosLibro.idiomas().get(0));
+        this.numeroDeDescargas = datosLibro.numeroDeDescargas();
+        this.autor = new Autor(datosLibro.autores().get(0));
+        this.autor.setLibro(this);
+    }
 
+    @Override
+    public String toString(){
+        return "\n=== === === === === LIBRO === === === === ===\n" +
+                "Titulo :: " + this.titulo + "\n" +
+                "Autor :: " + this.autor.getAutor() + "\n" +
+                "Idioma(s) :: " + this.idioma + "\n" +
+                "Numero de Descargas :: "+ this.numeroDeDescargas + "\n" +
+                "=== === === === === === === === === === ===\n";
     }
 
     public Long getId() {
@@ -38,22 +54,6 @@ public class Libro {
         this.titulo = titulo;
     }
 
-    public String getAutor() {
-        return autor;
-    }
-
-    public void setAutor(String autor) {
-        this.autor = autor;
-    }
-
-    public String getIdioma() {
-        return idioma;
-    }
-
-    public void setIdioma(String idioma) {
-        this.idioma = idioma;
-    }
-
     public Integer getNumeroDeDescargas() {
         return numeroDeDescargas;
     }
@@ -62,11 +62,19 @@ public class Libro {
         this.numeroDeDescargas = numeroDeDescargas;
     }
 
-    public Autor getDatosAutor() {
-        return datosAutor;
+    public Idioma getIdioma() {
+        return idioma;
     }
 
-    public void setDatosAutor(Autor datosAutor) {
-        this.datosAutor = datosAutor;
+    public void setIdioma(Idioma idioma) {
+        this.idioma = idioma;
+    }
+
+    public Autor getAutor() {
+        return autor;
+    }
+
+    public void setAutor(Autor autor) {
+        this.autor = autor;
     }
 }
